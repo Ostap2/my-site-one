@@ -12,6 +12,7 @@ function App() {
       <div>
         <LanguageSwitcher />
         <h1>{t('common.hello')}</h1>
+        <p>{t('common.intro')}</p>
       </div>
     </I18nextProvider>
   );
