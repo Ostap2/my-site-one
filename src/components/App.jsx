@@ -1,20 +1,18 @@
-// src/components/App.js
 import React from 'react';
-import { useTranslation, I18nextProvider } from 'react-i18next';
-import i18n from '../i18n';
 import LanguageSwitcher from './LanguageSwitcher/LanguageSwitcher';
+import Test from './Test/Test'
 
 function App() {
-  const { t } = useTranslation();
 
   return (
-    <I18nextProvider i18n={i18n}>
       <div>
+      <div className='container'>
         <LanguageSwitcher />
-        <h1>{t('common.hello')}</h1>
-        <p>{t('common.intro')}</p>
+        </div>
+        <div className='container'>
+       <Test/>
+        </div>
       </div>
-    </I18nextProvider>
   );
 }
 
