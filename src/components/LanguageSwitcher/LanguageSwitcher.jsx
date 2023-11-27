@@ -4,25 +4,25 @@
 
 
 
-// import React from 'react';
-// import { useTranslation } from 'react-i18next';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-// function LanguageSwitcher() {
-//   const { i18n } = useTranslation();
+function LanguageSwitcher() {
+  const { i18n } = useTranslation();
 
-//   const changeLanguage = (lng) => {
-//     i18n.changeLanguage(lng);
-//   };
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
 
-//   return (
-//     <div>
-//       <button onClick={() => changeLanguage('en')}>En</button>
-//       <button onClick={() => changeLanguage('uk')}>Uk</button>
-//     </div>
-//   );
-// }
+  return (
+    <div>
+      <button onClick={() => changeLanguage('en')}>En</button>
+      <button onClick={() => changeLanguage('uk')}>Uk</button>
+    </div>
+  );
+}
 
-// export default LanguageSwitcher;
+export default LanguageSwitcher;
 
 
 
@@ -64,27 +64,27 @@
 
 // Swicher03
 
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+// import React, { useState } from 'react';
+// import { useTranslation } from 'react-i18next';
 
-function LanguageSwitcher() {
-  const { i18n } = useTranslation();
-  const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
+// function LanguageSwitcher() {
+//   const { i18n } = useTranslation();
+//   const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
 
-  const toggleLanguage = () => {
-    const newLanguage = currentLanguage === 'en' ? 'uk' : 'en';
-    i18n.changeLanguage(newLanguage);
-    setCurrentLanguage(newLanguage);
-  };
+//   const toggleLanguage = () => {
+//     const newLanguage = currentLanguage === 'en' ? 'uk' : 'en';
+//     i18n.changeLanguage(newLanguage);
+//     setCurrentLanguage(newLanguage);
+//   };
 
-  return (
-    <div>
-      <button onClick={toggleLanguage}>
-        {currentLanguage === 'en' ? 'En' : 'Uk'}
-      </button>
-    </div>
-  );
-}
+//   return (
+//     <div>
+//       <button onClick={toggleLanguage}>
+//         {currentLanguage === 'en' ? 'En' : 'Uk'}
+//       </button>
+//     </div>
+//   );
+// }
 
-export default LanguageSwitcher;
+// export default LanguageSwitcher;
 
