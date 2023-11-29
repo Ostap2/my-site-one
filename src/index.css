@@ -40,10 +40,31 @@ h1 {
 p {
   font-size: 25px;
 }
-.container {
+/* .container {
   text-align: center;
   width: 800px;
+} */
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
+.select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 5px;
+  color: #666;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
 
-
+.option {
+  margin-top: 10px;
+  border: none;
+  background-color: red;
+}
