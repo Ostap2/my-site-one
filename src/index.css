@@ -40,17 +40,17 @@ h1 {
 p {
   font-size: 25px;
 }
-/* .container {
+.container {
   text-align: center;
   width: 800px;
-} */
+}
 
-.container {
+/* .container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-}
+} */
 
 .select {
   -webkit-appearance: none;
@@ -67,4 +67,10 @@ p {
   margin-top: 10px;
   border: none;
   background-color: red;
+}
+
+
+::selection {
+  background-color: #ccc;
+  color: white;
 }
