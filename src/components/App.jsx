@@ -1,64 +1,193 @@
-import React, { useEffect, useState } from 'react';
-import Sitebar from './Sitebar/Sitebar';
-
+import React, { useState, useEffect } from 'react';
 
 const App = () => {
-  const [activeItem, setActiveItem] = useState(null);
+  const initialState = {
+    score: 0,
+    bonusCost: 20,
+    bonusMultiplier: 1,
+    clickCooldown: 800,
+    cooldownBonus: 0,
+    cooldownBonusCost: 50,
+    customScore: '',
+    bonusCount: 0,
+    showWinner: false,
+    password: '',
+    setPassword: false,
+    isAdmin: false,
+  };
+
+  const [state, setState] = useState(() => {
+    const storedState = JSON.parse(localStorage.getItem('clickerState'));
+    return storedState || initialState;
+  });
+
+  const saveStateToLocalStorage = () => {
+    localStorage.setItem('clickerState', JSON.stringify(state));
+  };
+
+  const handleClick = () => {
+    setState((prevState) => {
+      if (prevState.clickCooldown === 0) {
+        const clickPoints = 1 + prevState.bonusCount;
+        return {
+          ...prevState,
+          score: prevState.score + clickPoints,
+          clickCooldown: 800 - prevState.cooldownBonus,
+          showWinner: prevState.score + clickPoints >= 9999,
+        };
+      }
+      return prevState;
+    });
+  };
+
+  const handleBuyBonus = () => {
+    if (state.score >= state.bonusCost) {
+      setState((prevState) => ({
+        ...prevState,
+        score: prevState.score - prevState.bonusCost,
+        bonusMultiplier: prevState.bonusMultiplier + 30,
+        bonusCost: prevState.bonusCost + 30,
+        bonusCount: prevState.bonusCount + 1,
+        clickCooldown: Math.max(200, prevState.clickCooldown - 100),
+      }));
+    } else {
+      alert("Not enough points to buy the bonus!");
+    }
+  };
+
+  const handleBuyCooldownBonus = () => {
+    if (state.score >= state.cooldownBonusCost) {
+      setState((prevState) => ({
+        ...prevState,
+        score: prevState.score - prevState.cooldownBonusCost,
+        cooldownBonus: prevState.cooldownBonus + 100,
+        cooldownBonusCost: prevState.cooldownBonusCost + 100,
+      }));
+    } else {
+      alert("Not enough points to buy the cooldown bonus!");
+    }
+  };
+
+  const handleSetCustomScore = () => {
+    if (state.isAdmin) {
+      setState((prevState) => ({
+        ...prevState,
+        setPassword: true,
+      }));
+    } else {
+      alert('You are not in admin mode');
+    }
+  };
+
+  const handleReset = () => {
+    setState(initialState);
+  };
+
+  const handleLogout = () => {
+    setState((prevState) => ({
+      ...prevState,
+      isAdmin: false,
+      setPassword: false,
+    }));
+  };
 
   useEffect(() => {
-    const body = document.body;
-    const menu = body.querySelector(".menu");
-    const menuItems = menu.querySelectorAll(".menu__item");
-    const menuBorder = menu.querySelector(".menu__border");
+    const interval = setInterval(() => {
+      setState((prevState) => ({
+        ...prevState,
+        clickCooldown: Math.max(0, prevState.clickCooldown - 100),
+      }));
+    }, 100);
 
-    function clickItem(item, index) {
-      menu.style.removeProperty("--timeOut");
+    return () => clearInterval(interval);
+  }, []);
 
-      // Remove "active" class from all items
-      menuItems.forEach((menuItem) => {
-        menuItem.classList.remove("active");
-      });
-
-      item.classList.add("active");
-      setActiveItem(item);
-      offsetMenuBorder(item);
-    }
-
-    function offsetMenuBorder(activeItem) {
-      if (activeItem) {
-        const offsetActiveItem = activeItem.getBoundingClientRect();
-        const left =
-          Math.floor(offsetActiveItem.left - menu.offsetLeft - (menuBorder.offsetWidth - offsetActiveItem.width) / 2) +
-          "px";
-        menuBorder.style.transform = `translate3d(${left}, 0 , 0)`;
-      }
-    }
-
-    offsetMenuBorder();
-
-    menuItems.forEach((item, index) => {
-      item.addEventListener("click", () => clickItem(item, index));
-    });
-
-    window.addEventListener("resize", () => offsetMenuBorder(activeItem));
-
-    return () => {
-      // Cleanup event listeners on component unmount
-      menuItems.forEach((item) => {
-        item.removeEventListener("click", () => clickItem(item));
-      });
-
-      window.removeEventListener("resize", () => offsetMenuBorder(activeItem));
-    };
-  }, [activeItem]);
-
+  useEffect(() => {
+    saveStateToLocalStorage();
+  }, [state]);
 
   return (
-    <div>
+    <div className="app-container">
+    <h1 className="app-title">Clicker App</h1>
+    <p className="score">Score: {state.score}</p>
+    <p className="cooldown">Click Cooldown: {state.clickCooldown / 1000} seconds</p>
+    <button className="click-button" onClick={handleClick} disabled={state.clickCooldown > 0}>
+      Click me!
+    </button>
+    <button className="buy-bonus-button" onClick={handleBuyBonus}>
+      Buy Bonus (Cost: {state.bonusCost})
+    </button>
+    <button className="buy-cooldown-bonus-button" onClick={handleBuyCooldownBonus}>
+      Buy Cooldown Bonus (Cost: {state.cooldownBonusCost})
+    </button>
 
+    {state.setPassword ? (
+      <div className="set-custom-score-container">
+        <div>
+          <label>Set Custom Score: </label>
+          <input
+            type="text"
+            className="custom-score-input"
+            value={state.customScore || ''}
+            onChange={(e) =>
+              setState((prevState) => ({ ...prevState, customScore: e.target.value }))
+            }
+          />
+          <button className="set-custom-score-button" onClick={handleSetCustomScore}>
+            Set
+          </button>
+        </div>
+      </div>
+    ) : (
+      <div className="admin-mode-container">
+        {state.isAdmin ? (
+          <div>
+            <label>Password: </label>
+            <input
+              type="password"
+              className="password-input"
+              value={state.password || ''}
+              onChange={(e) =>
+                setState((prevState) => ({ ...prevState, password: e.target.value }))
+              }
+            />
+            <button className="submit-password-button" onClick={handleSetCustomScore}>
+              Submit
+            </button>
+          </div>
+        ) : (
+          <div>
+            <button
+              className="enter-admin-mode-button"
+              onClick={() => setState((prevState) => ({ ...prevState, isAdmin: true }))}
+            >
+              Enter Admin Mode
+            </button>
+          </div>
+        )}
+      </div>
+    )}
 
-   <Sitebar/>
+    {state.showWinner && (
+      <div className="winner-container">
+        <h2>Congratulations! You are the winner!</h2>
+      </div>
+    )}
+
+    {state.isAdmin && (
+      <div className="admin-logout-container">
+        <button className="admin-logout-button" onClick={handleLogout}>
+          Logout from Admin Mode
+        </button>
+      </div>
+    )}
+
+    <div className="reset-all-container">
+      <button className="reset-all-button" onClick={handleReset}>
+        Reset All
+      </button>
     </div>
+  </div>
   );
 };
 
