@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Sitebar from './Sitebar/Sitebar';
-import Neon from './NeonHero/Neon'
+
 
 const App = () => {
   const [activeItem, setActiveItem] = useState(null);
@@ -55,7 +55,7 @@ const App = () => {
 
   return (
     <div>
-<Neon/>
+
 
    <Sitebar/>
     </div>
